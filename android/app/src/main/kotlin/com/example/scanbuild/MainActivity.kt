@@ -1,6 +1,5 @@
 package com.example.scanbuild
 
-import android.os.Bundle
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -34,11 +33,8 @@ class MainActivity : FlutterActivity() {
             }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
-    }
+    // NOTA: FLAG_SECURE NO se aplica aquí en onCreate. El control del flag
+    // está centralizado en Dart (SecureScreen.kEnabled). De esta forma,
+    // alternar entre "protegido" y "permite capturas" se hace cambiando un
+    // único booleano en lib/services/secure_screen.dart sin tocar Kotlin.
 }

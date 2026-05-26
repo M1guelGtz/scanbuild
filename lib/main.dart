@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
+import 'screens/integrity_gate_screen.dart';
+import 'screens/blocked_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_shell.dart';
 import 'screens/forgot_password_screen.dart';
@@ -18,8 +20,10 @@ class VisionPriceApp extends StatelessWidget {
       title: 'VisionPrice',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      initialRoute: '/login',
+      initialRoute: '/',
       routes: {
+        '/': (_) => const IntegrityGateScreen(),
+        '/blocked': (_) => const BlockedScreen(),
         '/login': (_) => const LoginScreen(),
         '/home': (_) => const HomeShell(),
         '/forgot': (_) => const ForgotPasswordScreen(),
