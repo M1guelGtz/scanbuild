@@ -16,6 +16,12 @@ abstract class AuthRepository {
   Future<void> logout();
   Future<AuthUser?> tryRestoreSession();
 
+  /// Closes the session because the user went idle. Before wiping the live
+  /// token pair it persists a snapshot (tokens + the idle window that was in
+  /// effect) into encrypted storage. [idleTimeout] is the configured window
+  /// that elapsed without interaction.
+  Future<void> expireSessionForInactivity({required Duration idleTimeout});
+
   // ---------- Biometric quick-unlock ----------
 
   /// True only when (a) device has biometric hardware + enrolled biometric

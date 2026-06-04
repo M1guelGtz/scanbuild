@@ -10,6 +10,7 @@ import '../../domain/services/credentials_vault.dart';
 import '../../domain/value_objects/auth_method.dart';
 import '../datasources/remote/auth_remote_data_source.dart';
 import '../datasources/remote/google_sign_in_service.dart';
+import '../local/expired_session_store.dart';
 import '../local/token_storage.dart';
 import '../mappers/auth_session_mapper.dart';
 
@@ -19,6 +20,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final GoogleSignInService _google;
   final BiometricAuthenticator _biometric;
   final CredentialsVault _vault;
+  final ExpiredSessionStore _expiredSessions;
 
   const AuthRepositoryImpl({
     required AuthRemoteDataSource remote,
@@ -26,11 +28,13 @@ class AuthRepositoryImpl implements AuthRepository {
     required GoogleSignInService google,
     required BiometricAuthenticator biometric,
     required CredentialsVault vault,
+    required ExpiredSessionStore expiredSessions,
   })  : _remote = remote,
         _storage = storage,
         _google = google,
         _biometric = biometric,
-        _vault = vault;
+        _vault = vault,
+        _expiredSessions = expiredSessions;
 
   // ---------- Login flows ----------
 
@@ -84,6 +88,23 @@ class AuthRepositoryImpl implements AuthRepository {
     // If the user wants to fully forget the device, they call
     // disableBiometricUnlock() (e.g. from a future "Olvidarme en este
     // dispositivo" toggle). That use case still exists and wipes the vault.
+  }
+
+  @override
+  Future<void> expireSessionForInactivity({required Duration idleTimeout}) async {
+
+    final access = await _storage.readAccessToken();
+    final refresh = await _storage.readRefreshToken();
+    await _expiredSessions.save(
+      ExpiredSessionSnapshot(
+        accessToken: access,
+        refreshToken: refresh,
+        expiredAt: DateTime.now(),
+        idleTimeout: idleTimeout,
+      ),
+    );
+  
+    await logout();
   }
 
   @override
