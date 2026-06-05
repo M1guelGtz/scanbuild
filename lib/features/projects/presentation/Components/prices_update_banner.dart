@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
-
-/// Informational green card shown above the CTA in AddProjectPage:
-/// `↗ Precios actualizados en CIUDAD · 42 proveedores activos · ...`.
-/// The numbers are placeholders for now — when the supplier-prices feature
-/// lands these become live.
 class PricesUpdateBanner extends StatelessWidget {
   final String city;
   final int suppliersCount;

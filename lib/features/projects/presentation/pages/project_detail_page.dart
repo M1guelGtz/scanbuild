@@ -6,7 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../di/projects_module.dart';
 import '../../domain/entities/project.dart';
 import '../view_models/project_detail_view_model.dart';
-import '../widgets/project_status_chip.dart';
+import '../Components/project_status_chip.dart';
 
 /// Receives the project id as `Navigator.pushNamed` argument.
 class ProjectDetailPage extends StatelessWidget {

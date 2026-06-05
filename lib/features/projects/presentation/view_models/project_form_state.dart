@@ -1,11 +1,4 @@
 import '../../domain/entities/project.dart';
-
-/// Shared state for the add + edit forms. `editingId == null` means "create";
-/// otherwise the VM is editing the project with that id.
-///
-/// Two interactive bits live in state so the view stays declarative:
-///   - workType: the selected card in the 2×2 grid (none until tapped).
-///   - status: pre-selected when editing, defaulted to measured when creating.
 class ProjectFormState {
   final String? editingId;
   final bool isSubmitting;

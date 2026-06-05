@@ -1,16 +1,9 @@
-// ignore_for_file: prefer_initializing_formals
-
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
 import 'api_exception.dart';
-
-/// Thin wrapper over package:http with consistent JSON serialization,
-/// header handling, timeout, and error parsing. Knows nothing about auth
-/// or any specific endpoint — every feature builds its own data source
-/// on top of an ApiClient instance.
 class ApiClient {
   final http.Client _client;
   final String _baseUrl;

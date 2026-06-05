@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entities/project.dart';
-
-/// Card used inside the AddProjectPage 2×2 grid. Selected = blue border +
-/// blue label + faint blue background. Unselected = neutral border, dark
-/// label.
 class WorkTypeChoiceCard extends StatelessWidget {
   final WorkType workType;
   final bool selected;

@@ -7,13 +7,10 @@ import '../../../../core/ui/atoms/primary_button.dart';
 import '../../di/projects_module.dart';
 import '../../domain/entities/project.dart';
 import '../view_models/project_form_view_model.dart';
-import '../widgets/city_picker.dart';
-import '../widgets/prices_update_banner.dart';
-import '../widgets/work_type_choice_card.dart';
+import '../Components/city_picker.dart';
+import '../Components/prices_update_banner.dart';
+import '../Components/work_type_choice_card.dart';
 
-/// "Nuevo proyecto" page matching the prototype: numbered steps, work-type
-/// grid, city picker with quick chips, prices banner, and a final
-/// "Comenzar escaneo →" CTA. On success creates the project and pops.
 class AddProjectPage extends StatelessWidget {
   const AddProjectPage({super.key});
 

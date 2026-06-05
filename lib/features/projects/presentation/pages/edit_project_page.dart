@@ -8,8 +8,8 @@ import '../../../../core/ui/molecules/labeled_text_field.dart';
 import '../../di/projects_module.dart';
 import '../../domain/entities/project.dart';
 import '../view_models/project_form_view_model.dart';
-import '../widgets/city_picker.dart';
-import '../widgets/work_type_choice_card.dart';
+import '../Components/city_picker.dart';
+import '../Components/work_type_choice_card.dart';
 
 /// Edit version of the project form. Reuses the same atoms/molecules as
 /// AddProjectPage but exposes more fields (cliente, área, presupuesto,

@@ -8,10 +8,6 @@ import '../../domain/repositories/project_repository.dart';
 import '../../domain/use_cases/create_project.dart';
 import '../../domain/use_cases/update_project.dart';
 import 'project_form_state.dart';
-
-/// Drives both AddProjectPage and EditProjectPage. Construct with
-/// `editingProject = null` for create, or pass an existing project to
-/// pre-fill the fields and switch to update mode.
 class ProjectFormViewModel extends ChangeNotifier {
   final CreateProject _createProject;
   final UpdateProject _updateProject;
@@ -49,7 +45,6 @@ class ProjectFormViewModel extends ChangeNotifier {
     if (_state.errorMessage != null) _set(_state.copyWith(errorMessage: null));
   }
 
-  /// Returns the saved Project on success, null on failure (error is on state).
   Future<Project?> save({
     required String name,
     String? description,

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/ui/atoms/status_chip.dart';
 import '../../domain/entities/project.dart';
 
-/// Bridges the generic StatusChip atom with the ProjectStatus enum. Uses
-/// the color scheme shown in the prototype.
 class ProjectStatusChip extends StatelessWidget {
   final ProjectStatus status;
   const ProjectStatusChip(this.status, {super.key});
