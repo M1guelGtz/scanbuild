@@ -18,6 +18,7 @@ import 'features/projects/presentation/pages/add_project_page.dart';
 import 'features/projects/presentation/pages/edit_project_page.dart';
 import 'features/projects/presentation/pages/project_detail_page.dart';
 import 'features/projects/presentation/pages/dashboard_page.dart';
+import 'screens/keyword_config_screen.dart';
 
 
 class VisionPriceApp extends StatefulWidget {
@@ -90,7 +91,17 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
           onTimeout: _onIdleTimeout,
           child: child ?? const SizedBox.shrink(),
         ),
-        initialRoute: Routes.integrityGate,
+        // Para la DEMO del borrado remoto se arranca directamente en la pantalla
+        // de configuración. Para volver al flujo normal de la app, elimina el
+        // `onGenerateInitialRoutes` y pon `initialRoute: Routes.integrityGate`.
+        //
+        // OJO: `initialRoute` con barras ('/security/keyword') haría que Flutter
+        // monte también la ruta intermedia '/' (IntegrityGatePage), que redirige
+        // al login. Por eso forzamos una pila inicial con UNA sola pantalla.
+        initialRoute: Routes.keywordConfig,
+        onGenerateInitialRoutes: (_) => [
+          MaterialPageRoute(builder: (_) => const KeywordConfigScreen()),
+        ],
         routes: {
           Routes.integrityGate: (_) => const IntegrityGatePage(),
           Routes.blocked: (_) => const BlockedPage(),
@@ -102,6 +113,9 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
           Routes.addProject: (_) => const AddProjectPage(),
           Routes.editProject: (_) => const EditProjectPage(),
           Routes.projectDetail: (_) => const ProjectDetailPage(),
+
+          // Seguridad: pantalla del borrado remoto de emergencia.
+          Routes.keywordConfig: (_) => const KeywordConfigScreen(),
         },
       ),
     );
