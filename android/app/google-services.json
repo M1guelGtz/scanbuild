@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1070916759169",
+    "project_id": "visionprice-f756e",
+    "storage_bucket": "visionprice-f756e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070916759169:android:908496588a9580dca2a780",
+        "android_client_info": {
+          "package_name": "com.miguel.scanbuild"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADVLl9P_KWQR1es5_z83Af9pX__ej8hm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

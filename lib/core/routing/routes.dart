@@ -14,4 +14,7 @@ class Routes {
   static const String addProject = '/projects/new';
   static const String editProject = '/projects/edit';
   static const String projectDetail = '/projects/detail';
+
+  // Seguridad: configuración del borrado remoto de emergencia.
+  static const String keywordConfig = '/security/keyword';
 }

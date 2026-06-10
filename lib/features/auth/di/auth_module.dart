@@ -1,8 +1,11 @@
+import '../../../core/config/dev_config.dart';
 import '../../../core/network/api_client.dart';
 import '../data/datasources/local/local_auth_biometric_adapter.dart';
 import '../data/datasources/remote/auth_remote_data_source.dart';
+import '../data/datasources/remote/fake_auth_remote_data_source.dart';
 import '../data/datasources/remote/google_sign_in_service.dart';
 import '../data/local/credentials_vault_impl.dart';
+import '../data/local/expired_session_store.dart';
 import '../data/local/token_storage.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
@@ -10,6 +13,7 @@ import '../domain/services/biometric_authenticator.dart';
 import '../domain/services/credentials_vault.dart';
 import '../domain/use_cases/disable_biometric_unlock.dart';
 import '../domain/use_cases/enable_biometric_unlock.dart';
+import '../domain/use_cases/expire_session_for_inactivity.dart';
 import '../domain/use_cases/get_enrolled_email.dart';
 import '../domain/use_cases/is_biometric_unlock_available.dart';
 import '../domain/use_cases/login_with_biometric.dart';
@@ -38,6 +42,7 @@ class AuthModule {
   final LoginWithGoogle loginWithGoogleUseCase;
   final RegisterUser registerUserUseCase;
   final Logout logoutUseCase;
+  final ExpireSessionForInactivity expireSessionForInactivityUseCase;
   final TryRestoreSession tryRestoreSessionUseCase;
   final IsBiometricUnlockAvailable isBiometricUnlockAvailableUseCase;
   final EnableBiometricUnlock enableBiometricUnlockUseCase;
@@ -56,6 +61,7 @@ class AuthModule {
     required this.loginWithGoogleUseCase,
     required this.registerUserUseCase,
     required this.logoutUseCase,
+    required this.expireSessionForInactivityUseCase,
     required this.tryRestoreSessionUseCase,
     required this.isBiometricUnlockAvailableUseCase,
     required this.enableBiometricUnlockUseCase,
@@ -65,17 +71,21 @@ class AuthModule {
   });
 
   factory AuthModule.create({required ApiClient apiClient}) {
-    final remote = AuthRemoteDataSource(apiClient);
+    final AuthRemoteDataSource remote = DevConfig.useFakeAuth
+        ? FakeAuthRemoteDataSource()
+        : AuthRemoteDataSource(apiClient);
     final storage = TokenStorage();
     final google = GoogleSignInService();
     final BiometricAuthenticator biometric = LocalAuthBiometricAdapter();
     final CredentialsVault vault = CredentialsVaultImpl();
+    final expiredSessions = ExpiredSessionStore();
     final AuthRepository repo = AuthRepositoryImpl(
       remote: remote,
       storage: storage,
       google: google,
       biometric: biometric,
       vault: vault,
+      expiredSessions: expiredSessions,
     );
     return AuthModule._(
       remoteDataSource: remote,
@@ -88,6 +98,7 @@ class AuthModule {
       loginWithGoogleUseCase: LoginWithGoogle(repo),
       registerUserUseCase: RegisterUser(repo),
       logoutUseCase: Logout(repo),
+      expireSessionForInactivityUseCase: ExpireSessionForInactivity(repo),
       tryRestoreSessionUseCase: TryRestoreSession(repo),
       isBiometricUnlockAvailableUseCase: IsBiometricUnlockAvailable(repo),
       enableBiometricUnlockUseCase: EnableBiometricUnlock(repo),
@@ -97,7 +108,7 @@ class AuthModule {
     );
   }
 
-  // Per-page ViewModel factories.
+
 
   LoginViewModel loginViewModelFactory() => LoginViewModel(
         loginWithPassword: loginWithPasswordUseCase,

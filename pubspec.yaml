@@ -41,6 +41,11 @@ dependencies:
   provider: ^6.1.5+1
   local_auth: ^3.0.1
 
+  # --- Borrado remoto de emergencia (remote wipe vía FCM) ---
+  firebase_core: ^4.1.1
+  firebase_messaging: ^16.0.2
+  flutter_local_notifications: ^19.4.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

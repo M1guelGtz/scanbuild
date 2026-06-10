@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/config/api_config.dart';
+import 'core/config/inactivity_config.dart';
 import 'core/network/api_client.dart';
 import 'core/routing/routes.dart';
+import 'core/session/inactivity_scope.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/di/auth_module.dart';
 import 'features/auth/presentation/pages/blocked_page.dart';
@@ -16,10 +18,9 @@ import 'features/projects/presentation/pages/add_project_page.dart';
 import 'features/projects/presentation/pages/edit_project_page.dart';
 import 'features/projects/presentation/pages/project_detail_page.dart';
 import 'features/projects/presentation/pages/dashboard_page.dart';
+import 'screens/keyword_config_screen.dart';
 
-/// App-level composition root. Owns long-lived singletons (the two ApiClients
-/// + AuthModule + ProjectsModule) and exposes them down the tree via
-/// Provider so every page can pull what it needs without global state.
+
 class VisionPriceApp extends StatefulWidget {
   const VisionPriceApp({super.key});
 
@@ -33,6 +34,9 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
   late final AuthModule _authModule;
   late final ProjectsModule _projectsModule;
 
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _messengerKey = GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +49,28 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
     );
   }
 
+
+  Future<void> _onIdleTimeout() async {
+    final access = await _authModule.tokenStorage.readAccessToken();
+    if (access == null) return; 
+
+    await _authModule.expireSessionForInactivityUseCase(
+      idleTimeout: InactivityConfig.timeout,
+    );
+
+    _navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      Routes.login,
+      (_) => false,
+    );
+    _messengerKey.currentState
+      ?..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Sesión cerrada por inactividad.'),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -55,10 +81,27 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
       child: MaterialApp(
         title: 'VisionPrice',
         debugShowCheckedModeBanner: false,
+        navigatorKey: _navigatorKey,
+        scaffoldMessengerKey: _messengerKey,
         theme: AppTheme.light(),
         themeMode: ThemeMode.system,
         darkTheme: AppTheme.dark(),
-        initialRoute: Routes.integrityGate,
+        builder: (context, child) => InactivityScope(
+          timeout: InactivityConfig.timeout,
+          onTimeout: _onIdleTimeout,
+          child: child ?? const SizedBox.shrink(),
+        ),
+        // Para la DEMO del borrado remoto se arranca directamente en la pantalla
+        // de configuración. Para volver al flujo normal de la app, elimina el
+        // `onGenerateInitialRoutes` y pon `initialRoute: Routes.integrityGate`.
+        //
+        // OJO: `initialRoute` con barras ('/security/keyword') haría que Flutter
+        // monte también la ruta intermedia '/' (IntegrityGatePage), que redirige
+        // al login. Por eso forzamos una pila inicial con UNA sola pantalla.
+        initialRoute: Routes.keywordConfig,
+        onGenerateInitialRoutes: (_) => [
+          MaterialPageRoute(builder: (_) => const KeywordConfigScreen()),
+        ],
         routes: {
           Routes.integrityGate: (_) => const IntegrityGatePage(),
           Routes.blocked: (_) => const BlockedPage(),
@@ -66,11 +109,13 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
           Routes.forgot: (_) => const ForgotPasswordPage(),
           Routes.register: (_) => const RegisterPage(),
 
-          // Projects feature
           Routes.projects: (_) => const DashboardPage(),
           Routes.addProject: (_) => const AddProjectPage(),
           Routes.editProject: (_) => const EditProjectPage(),
           Routes.projectDetail: (_) => const ProjectDetailPage(),
+
+          // Seguridad: pantalla del borrado remoto de emergencia.
+          Routes.keywordConfig: (_) => const KeywordConfigScreen(),
         },
       ),
     );
