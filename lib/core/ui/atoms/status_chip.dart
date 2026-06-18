@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Compact pill that shows the status of a thing. Atomic — color and label
-/// are provided by the caller so this widget knows nothing about Projects
-/// or any other feature.
 class StatusChip extends StatelessWidget {
   final String label;
   final Color color;

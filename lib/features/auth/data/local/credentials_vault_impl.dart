@@ -6,10 +6,6 @@ import '../../domain/entities/saved_credentials.dart';
 import '../../domain/services/credentials_vault.dart';
 import '../../domain/value_objects/auth_method.dart';
 
-/// Persists SavedCredentials using flutter_secure_storage, which in turn
-/// uses Keystore (Android EncryptedSharedPreferences) and Keychain (iOS)
-/// underneath. Single JSON blob under one key — simpler than three keys
-/// and atomic (no partial writes when overwriting).
 class CredentialsVaultImpl implements CredentialsVault {
   static const _key = 'vp.biometric.credentials';
 
@@ -45,7 +41,6 @@ class CredentialsVaultImpl implements CredentialsVault {
           return SavedCredentials.google(email: email);
       }
     } catch (_) {
-      // Corrupt blob — clear and pretend it never existed.
       await _storage.delete(key: _key);
       return null;
     }

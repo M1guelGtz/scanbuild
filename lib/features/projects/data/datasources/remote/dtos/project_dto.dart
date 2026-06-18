@@ -5,10 +5,10 @@ class ProjectDto {
   final String? description;
   final String? clientName;
   final String? location;
-  final String workType; // raw wire format
+  final String workType;
   final String? area;
   final String? totalBudget;
-  final String status; // raw wire format
+  final String status;
   final String createdAt;
   final String updatedAt;
 

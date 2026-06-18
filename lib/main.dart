@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
+import 'core/platform/usb_debugging_guard.dart';
+import 'core/security/usb_debug_block_app.dart';
 import 'features/auth/data/datasources/remote/google_sign_in_service.dart';
 import 'firebase_options.dart';
 import 'services/fcm_service.dart';
@@ -21,18 +23,18 @@ Future<void> main() async {
     FlutterError.presentError(details);
   };
 
-  // --- Firebase + borrado remoto de emergencia (FCM) ---
+  if (await UsbDebuggingGuard.isUsbDebuggingEnabled()) {
+    runApp(const UsbDebugBlockApp());
+    return;
+  }
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    // Registra el handler de SEGUNDO PLANO (función top-level vm:entry-point).
-    // Debe registrarse antes de runApp.
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-    // Prepara las notificaciones locales (canal de seguridad) y los listeners
-    // de primer plano + el token de pruebas.
     await LocalNotifications.init();
     await FcmService().init();
   } catch (e) {
@@ -41,7 +43,7 @@ Future<void> main() async {
 
   try {
     await GoogleSignInService.ensureInitialized();
-  } catch (_) {/* non-fatal: will retry on first use */}
+  } catch (_) {}
 
 
   runApp(const VisionPriceApp());

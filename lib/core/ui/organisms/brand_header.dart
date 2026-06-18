@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../atoms/v_logo.dart';
 
-/// Logo + product name displayed side-by-side. Appears at the top of every
-/// authentication-related page.
 class BrandHeader extends StatelessWidget {
   final double logoSize;
   final double fontSize;

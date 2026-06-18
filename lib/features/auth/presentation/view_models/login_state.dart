@@ -2,11 +2,7 @@ class LoginState {
   final bool isSubmitting;
   final bool isGoogleLoading;
   final bool isBiometricLoading;
-  /// Whether the device + user state qualify for a biometric shortcut.
-  /// Resolved asynchronously after the page mounts.
   final bool biometricAvailable;
-  /// Whether to prompt the user to enable biometric after a successful
-  /// password/google login that just happened.
   final bool shouldOfferBiometricEnroll;
   final String? errorMessage;
   final bool keepSession;

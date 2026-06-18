@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Compact KPI tile used in the dashboard header. Atomic — does not know
-/// what the number means, just renders value + small label.
 class MetricCard extends StatelessWidget {
   final String value;
   final String label;

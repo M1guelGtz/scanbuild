@@ -14,8 +14,6 @@ import '../presentation/view_models/dashboard_view_model.dart';
 import '../presentation/view_models/project_detail_view_model.dart';
 import '../presentation/view_models/project_form_view_model.dart';
 
-/// Manual factory / composition root for the projects feature.
-/// Created once at app start; produces fresh ViewModels per page.
 class ProjectsModule {
   final ProjectRemoteDataSource remoteDataSource;
   final ProjectRepository repository;
@@ -36,9 +34,6 @@ class ProjectsModule {
     required this.deleteProjectUseCase,
   });
 
-  /// Wires the feature. `projectsApiClient` is a SEPARATE ApiClient pointed
-  /// at the projects-service URL (port 3001). The token store is shared with
-  /// auth — that's where the access token lives after login.
   factory ProjectsModule.create({
     required ApiClient projectsApiClient,
     required TokenStorage tokenStorage,
@@ -56,7 +51,6 @@ class ProjectsModule {
     );
   }
 
-  // ---------- ViewModel factories ----------
 
   ProjectFormViewModel projectFormViewModelFactory({Project? editing}) =>
       ProjectFormViewModel(
@@ -72,9 +66,6 @@ class ProjectsModule {
         projectId: projectId,
       );
 
-  /// Cross-feature factory: needs the Auth `TryRestoreSession` to fetch the
-  /// current user for the greeting. The composition root supplies it so this
-  /// module doesn't import an auth module directly.
   DashboardViewModel dashboardViewModelFactory({
     required TryRestoreSession tryRestoreSession,
   }) =>

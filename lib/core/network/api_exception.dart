@@ -1,6 +1,3 @@
-/// Single exception type bubbled up from the network layer. Data sources
-/// in any feature can catch this without knowing which package was used
-/// to perform the HTTP call.
 class ApiException implements Exception {
   final int statusCode;
   final String code;

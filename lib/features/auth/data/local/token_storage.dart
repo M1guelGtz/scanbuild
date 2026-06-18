@@ -1,7 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Thin wrapper around flutter_secure_storage that owns the keys for the
-/// access + refresh token pair. Uses the platform's secure keystore.
 class TokenStorage {
   static const _accessKey = 'vp.accessToken';
   static const _refreshKey = 'vp.refreshToken';

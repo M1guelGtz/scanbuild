@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// 18×18 dark circle with a white "G". Stand-in for the real Google logo
-/// to avoid bundling the brand SVG; swap to the official asset when
-/// publishing publicly.
 class GoogleIcon extends StatelessWidget {
   const GoogleIcon({super.key});
 

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Horizontal divider with a tiny uppercase label centered in it,
-/// e.g. "O CONTINÚA CON".
 class DividerWithLabel extends StatelessWidget {
   final String label;
   const DividerWithLabel(this.label, {super.key});

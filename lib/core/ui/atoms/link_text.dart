@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Inline text styled as a link (primary color, semibold). Tap target is
-/// the text itself; for larger tap targets wrap in InkWell at the call site.
 class LinkText extends StatelessWidget {
   final String text;
   final VoidCallback? onTap;

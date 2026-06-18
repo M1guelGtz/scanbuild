@@ -13,15 +13,6 @@ import '../../domain/use_cases/login_with_google.dart';
 import '../../domain/use_cases/login_with_password.dart';
 import 'login_state.dart';
 
-/// Drives the LoginPage. Now coordinates four flows:
-///   - Password login.
-///   - Google login.
-///   - Biometric quick-unlock (replay of one of the above).
-///   - Post-login opt-in to enable biometric for the next launch.
-///
-/// Credentials used for the just-completed login are kept in memory only
-/// long enough to ask the user "want to save these for biometric?". They
-/// never leave the VM and are wiped on disposal.
 class LoginViewModel extends ChangeNotifier {
   final LoginWithPassword _loginWithPassword;
   final LoginWithGoogle _loginWithGoogle;
@@ -34,8 +25,6 @@ class LoginViewModel extends ChangeNotifier {
   LoginState _state = const LoginState();
   LoginState get state => _state;
 
-  /// Held in memory between a successful login and the user's answer to
-  /// the "enable biometric?" dialog. Discarded once the choice is made.
   SavedCredentials? _pendingCredentials;
 
   LoginViewModel({
@@ -54,11 +43,7 @@ class LoginViewModel extends ChangeNotifier {
         _getEnrolledEmail = getEnrolledEmail,
         _biometricAuthenticator = biometricAuthenticator;
 
-  // ---------- lifecycle ----------
 
-  /// Called by the view on mount: resolves whether to show the biometric
-  /// shortcut button. Safe to call multiple times. Failures are swallowed
-  /// so a misconfigured `local_auth` cannot block the login page.
   Future<void> resolveBiometricAvailability() async {
     try {
       final ok = await _isBiometricUnlockAvailable();
@@ -69,7 +54,6 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  // ---------- password ----------
 
   Future<bool> loginWithPassword({
     required String email,
@@ -79,7 +63,6 @@ class LoginViewModel extends ChangeNotifier {
     _set(_state.copyWith(isSubmitting: true, errorMessage: null));
     try {
       await _loginWithPassword(email: email, password: password);
-      // Stash credentials in case the user wants to enable biometric.
       _pendingCredentials = SavedCredentials.password(
         email: email,
         password: password,
@@ -100,14 +83,13 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  // ---------- google ----------
 
   Future<bool> loginWithGoogle() async {
     if (_state.isBusy) return false;
     _set(_state.copyWith(isGoogleLoading: true, errorMessage: null));
     try {
       final session = await _loginWithGoogle();
-      if (session == null) return false; // user cancelled
+      if (session == null) return false;
       _pendingCredentials = SavedCredentials.google(email: session.user.email);
       await _maybeOfferEnroll();
       return true;
@@ -122,10 +104,7 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  // ---------- biometric ----------
 
-  /// Triggers the OS biometric prompt. On success, the user lands logged in.
-  /// Returns true on success, false on cancellation, throws nothing visible.
   Future<bool> loginWithBiometric() async {
     if (_state.isBusy) return false;
     _set(_state.copyWith(isBiometricLoading: true, errorMessage: null));
@@ -134,7 +113,6 @@ class LoginViewModel extends ChangeNotifier {
       return user != null;
     } on ApiException catch (e) {
       _set(_state.copyWith(errorMessage: _humanize(e)));
-      // After a 401/403 the repo already wiped the vault; refresh state.
       if (e.statusCode == 401 || e.statusCode == 403) {
         await resolveBiometricAvailability();
       }
@@ -147,7 +125,6 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  /// Called by the view when the user accepts the "enable biometric" dialog.
   Future<void> acceptBiometricEnroll() async {
     final creds = _pendingCredentials;
     _pendingCredentials = null;
@@ -160,13 +137,11 @@ class LoginViewModel extends ChangeNotifier {
     await _enableBiometricUnlock(creds);
   }
 
-  /// Called by the view when the user declines the "enable biometric" dialog.
   void declineBiometricEnroll() {
     _pendingCredentials = null;
     _set(_state.copyWith(shouldOfferBiometricEnroll: false));
   }
 
-  // ---------- helpers ----------
 
   void setKeepSession(bool value) {
     _set(_state.copyWith(keepSession: value));
@@ -176,21 +151,6 @@ class LoginViewModel extends ChangeNotifier {
     if (_state.errorMessage != null) _set(_state.copyWith(errorMessage: null));
   }
 
-  /// Decides whether to ask the just-logged-in user to enroll their
-  /// credentials for biometric quick-unlock. The dialog is offered when:
-  ///
-  ///   - the device has biometric hardware enrolled (`hwOk`), AND
-  ///   - either nothing is stored yet, OR the stored email belongs to a
-  ///     different account than the one that just signed in (account
-  ///     switching scenario).
-  ///
-  /// If the same account is already enrolled we stay silent — re-asking
-  /// after every login would be noise.
-  ///
-  /// IMPORTANT: this method is best-effort and must never propagate an
-  /// exception, because it runs AFTER a successful backend login. If
-  /// `local_auth` is misconfigured, we must NOT make the user believe
-  /// their login failed.
   Future<void> _maybeOfferEnroll() async {
     try {
       final hwOk = await _biometricAuthenticator.isAvailable();
@@ -207,7 +167,6 @@ class LoginViewModel extends ChangeNotifier {
         _set(_state.copyWith(shouldOfferBiometricEnroll: true));
         return;
       }
-      // Same account already enrolled — nothing to do.
     } catch (e, st) {
       debugPrint('Biometric availability check failed (non-fatal): $e\n$st');
     }
@@ -234,7 +193,7 @@ class LoginViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _pendingCredentials = null; // belt-and-suspenders: don't keep in memory
+    _pendingCredentials = null;
     super.dispose();
   }
 }

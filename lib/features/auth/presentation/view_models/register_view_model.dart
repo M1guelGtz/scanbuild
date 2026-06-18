@@ -7,12 +7,6 @@ import '../../domain/use_cases/login_with_google.dart';
 import '../../domain/use_cases/register_user.dart';
 import 'register_state.dart';
 
-/// Drives the RegisterPage with two side-effect actions:
-///
-/// - [register] for the email/password flow → POST /auth/register
-/// - [registerWithGoogle] for the native sign-in flow → POST
-///   /auth/google/token (the backend upserts the user, so the same use
-///   case used for "login with Google" doubles as registration).
 class RegisterViewModel extends ChangeNotifier {
   final RegisterUser _registerUser;
   final LoginWithGoogle _loginWithGoogle;
@@ -62,7 +56,6 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
-  /// Returns true on success, false on failure or user cancellation.
   Future<bool> registerWithGoogle() async {
     if (_state.isBusy) return false;
     _set(_state.copyWith(isGoogleLoading: true, errorMessage: null));
@@ -80,7 +73,6 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
-  // ---------- helpers ----------
 
   void _set(RegisterState next) {
     _state = next;

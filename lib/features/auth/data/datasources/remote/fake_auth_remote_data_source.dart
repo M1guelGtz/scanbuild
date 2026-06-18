@@ -4,16 +4,6 @@ import '../../../../../core/config/dev_config.dart';
 import 'auth_remote_data_source.dart';
 import 'dtos/auth_response_dto.dart';
 
-/// In-memory stand-in for [AuthRemoteDataSource] used only when
-/// `--dart-define=DEV_FAKE_AUTH=true`. Every call resolves locally to the
-/// mock identity from [DevConfig] — no HTTP, no auth-service needed.
-///
-/// This lets you reach the authenticated UI (and exercise the inactivity
-/// auto-logout) with any email/password on the login form.
-///
-/// NOTE: it only fakes the *backend* exchange. Google sign-in still drives the
-/// real Google SDK to obtain an id_token before reaching here, so the
-/// password form is the intended dev entry point.
 class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
   FakeAuthRemoteDataSource() {
     debugPrint('⚠️  DEV_FAKE_AUTH is ON — using in-memory mock auth backend.');
@@ -30,7 +20,6 @@ class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
   AuthResponseDto _session() => AuthResponseDto(
         accessToken: 'dev-access-token',
         refreshToken: 'dev-refresh-token',
-        // Far-future expiry so refresh paths behave.
         refreshExpiresAt: DateTime.now().add(const Duration(days: 7)).toIso8601String(),
         user: _user,
       );

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Full-width primary CTA. Shows a spinner when [loading] is true and
-/// disables both the press handler and the inner content.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final IconData? trailingIcon;

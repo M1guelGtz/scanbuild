@@ -29,14 +29,9 @@ class DashboardViewModel extends ChangeNotifier {
         _deleteProject = deleteProject,
         _tryRestoreSession = tryRestoreSession;
 
-  /// Loads the user profile and the project list. Each fetch is wrapped in
-  /// its own try-catch so a failure in one does not nuke the other (the
-  /// dashboard can still render with an unknown user, or vice versa).
   Future<void> load() async {
     _set(_state.copyWith(isLoading: true, errorMessage: null));
 
-    // 1) Restore the session (best-effort — failures here don't matter for
-    //    showing projects).
     try {
       _user = await _tryRestoreSession();
     } catch (e, st) {
@@ -44,8 +39,6 @@ class DashboardViewModel extends ChangeNotifier {
       _user = null;
     }
 
-    // 2) Fetch the projects list. This one matters — failure becomes a
-    //    user-visible error message.
     List<Project> list;
     try {
       list = await _getProjects();

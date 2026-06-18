@@ -8,7 +8,6 @@ import '../../domain/entities/project.dart';
 import '../view_models/project_detail_view_model.dart';
 import '../widgets/project_status_chip.dart';
 
-/// Receives the project id as `Navigator.pushNamed` argument.
 class ProjectDetailPage extends StatelessWidget {
   const ProjectDetailPage({super.key});
 

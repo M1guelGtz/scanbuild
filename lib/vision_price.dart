@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'core/config/api_config.dart';
 import 'core/config/inactivity_config.dart';
 import 'core/network/api_client.dart';
+import 'core/platform/usb_debugging_guard.dart';
 import 'core/routing/routes.dart';
+import 'core/security/usb_debug_block_app.dart';
 import 'core/session/inactivity_scope.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/di/auth_module.dart';
@@ -28,7 +33,8 @@ class VisionPriceApp extends StatefulWidget {
   State<VisionPriceApp> createState() => _VisionPriceAppState();
 }
 
-class _VisionPriceAppState extends State<VisionPriceApp> {
+class _VisionPriceAppState extends State<VisionPriceApp>
+    with WidgetsBindingObserver {
   late final ApiClient _authApiClient;
   late final ApiClient _projectsApiClient;
   late final AuthModule _authModule;
@@ -36,6 +42,10 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
 
   final _navigatorKey = GlobalKey<NavigatorState>();
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
+
+  StreamSubscription<bool>? _usbDebugSub;
+  Timer? _usbDebugCloseTimer;
+  bool _usbDebugBlocked = false;
 
   @override
   void initState() {
@@ -47,6 +57,54 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
       projectsApiClient: _projectsApiClient,
       tokenStorage: _authModule.tokenStorage,
     );
+
+    WidgetsBinding.instance.addObserver(this);
+    _usbDebugSub = UsbDebuggingGuard.watch().listen((enabled) {
+      if (enabled) _onUsbDebuggingDetected();
+    });
+  }
+
+  @override
+  void dispose() {
+    _usbDebugSub?.cancel();
+    _usbDebugCloseTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      UsbDebuggingGuard.isUsbDebuggingEnabled().then((enabled) {
+        if (enabled) _onUsbDebuggingDetected();
+      });
+    }
+  }
+
+  void _onUsbDebuggingDetected() {
+    if (_usbDebugBlocked) return;
+    _usbDebugBlocked = true;
+
+    final context = _navigatorKey.currentContext;
+    if (context == null) {
+      SystemNavigator.pop();
+      return;
+    }
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (_) => UsbDebugBlockDialog(onClose: _closeAppForUsbDebug),
+    );
+
+    _usbDebugCloseTimer =
+        Timer(const Duration(seconds: 8), _closeAppForUsbDebug);
+  }
+
+  void _closeAppForUsbDebug() {
+    _usbDebugCloseTimer?.cancel();
+    SystemNavigator.pop();
   }
 
 
@@ -91,17 +149,8 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
           onTimeout: _onIdleTimeout,
           child: child ?? const SizedBox.shrink(),
         ),
-        // Para la DEMO del borrado remoto se arranca directamente en la pantalla
-        // de configuración. Para volver al flujo normal de la app, elimina el
-        // `onGenerateInitialRoutes` y pon `initialRoute: Routes.integrityGate`.
-        //
-        // OJO: `initialRoute` con barras ('/security/keyword') haría que Flutter
-        // monte también la ruta intermedia '/' (IntegrityGatePage), que redirige
-        // al login. Por eso forzamos una pila inicial con UNA sola pantalla.
-        initialRoute: Routes.keywordConfig,
-        onGenerateInitialRoutes: (_) => [
-          MaterialPageRoute(builder: (_) => const KeywordConfigScreen()),
-        ],
+       
+        initialRoute: Routes.integrityGate,
         routes: {
           Routes.integrityGate: (_) => const IntegrityGatePage(),
           Routes.blocked: (_) => const BlockedPage(),
@@ -114,7 +163,6 @@ class _VisionPriceAppState extends State<VisionPriceApp> {
           Routes.editProject: (_) => const EditProjectPage(),
           Routes.projectDetail: (_) => const ProjectDetailPage(),
 
-          // Seguridad: pantalla del borrado remoto de emergencia.
           Routes.keywordConfig: (_) => const KeywordConfigScreen(),
         },
       ),

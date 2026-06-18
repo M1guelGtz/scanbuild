@@ -1,6 +1,3 @@
-/// Pure JSON shape returned by the auth-service. Lives in `data/` and
-/// never escapes the boundary as-is — a mapper turns it into an
-/// `AuthSession` (domain entity) before reaching the application layer.
 class AuthResponseDto {
   final String accessToken;
   final String refreshToken;

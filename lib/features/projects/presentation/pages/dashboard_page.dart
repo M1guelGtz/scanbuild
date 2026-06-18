@@ -9,10 +9,6 @@ import '../../di/projects_module.dart';
 import '../../domain/entities/project.dart';
 import '../view_models/dashboard_view_model.dart';
 
-/// Dashboard intentionally rebuilt with the simplest widget tree possible
-/// to dodge Flutter 3.44 rendering glitches we hit with Stack/Material/
-/// CustomPaint combinations. Visually keeps the prototype layout:
-/// fecha + saludo + avatar · KPIs · sección PROYECTOS · cards · FAB.
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -89,7 +85,6 @@ class _DashboardViewState extends State<_DashboardView> {
       body: SafeArea(
         child: Consumer<DashboardViewModel>(
           builder: (context, vm, _) {
-            // Surface backend errors via SnackBar without overlaying widgets.
             if (vm.state.errorMessage != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 final msg = vm.state.errorMessage;
@@ -127,7 +122,6 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
-  // ---------- Header ----------
 
   Widget _header(DashboardViewModel vm) {
     final name = vm.user?.name ?? 'usuario';
@@ -185,7 +179,6 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
-  // ---------- KPI cards ----------
 
   Widget _kpiRow(DashboardViewModel vm) {
     return Row(
@@ -232,7 +225,6 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
-  // ---------- Section title ----------
 
   Widget _sectionTitle() {
     return const Row(
@@ -259,7 +251,6 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
-  // ---------- Projects list ----------
 
   Widget _projectsBody(DashboardViewModel vm) {
     if (vm.state.isLoading && vm.state.projects.isEmpty) {
@@ -442,7 +433,6 @@ class _DashboardViewState extends State<_DashboardView> {
     return parts.join('  ·  ');
   }
 
-  // ---------- Helpers ----------
 
   static const _months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   static const _weekdays = ['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Numbered uppercase label used by multi-step forms: "01 · NOMBRE DEL PROYECTO".
-/// The number is rendered in a slightly muted shade so the label dominates.
 class NumberedStepLabel extends StatelessWidget {
   final int step;
   final String label;

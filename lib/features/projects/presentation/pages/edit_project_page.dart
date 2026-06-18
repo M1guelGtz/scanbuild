@@ -11,9 +11,6 @@ import '../view_models/project_form_view_model.dart';
 import '../widgets/city_picker.dart';
 import '../widgets/work_type_choice_card.dart';
 
-/// Edit version of the project form. Reuses the same atoms/molecules as
-/// AddProjectPage but exposes more fields (cliente, área, presupuesto,
-/// descripción, estado) ya que en edit sí pueden manipularse.
 class EditProjectPage extends StatelessWidget {
   const EditProjectPage({super.key});
 

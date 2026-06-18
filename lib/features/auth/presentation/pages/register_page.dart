@@ -15,8 +15,6 @@ import '../../di/auth_module.dart';
 import '../view_models/register_state.dart';
 import '../view_models/register_view_model.dart';
 
-/// Email/password registration + Google sign-up. Both routes converge on
-/// the same /projects landing page on success.
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
@@ -46,8 +44,6 @@ class _RegisterViewState extends State<_RegisterView> {
   @override
   void initState() {
     super.initState();
-    // The /login screen turns FLAG_SECURE on; reaffirm it for /register too
-    // so screenshots of the create-account form are also blocked.
     SecureScreen.enable();
   }
 
@@ -96,8 +92,6 @@ class _RegisterViewState extends State<_RegisterView> {
       body: SafeArea(
         child: Consumer<RegisterViewModel>(
           builder: (context, vm, _) {
-            // Surface errors via SnackBar (no overlapping widgets that could
-            // break the render tree).
             if (vm.state.errorMessage != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 final msg = vm.state.errorMessage;

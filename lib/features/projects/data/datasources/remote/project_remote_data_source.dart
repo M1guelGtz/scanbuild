@@ -3,10 +3,6 @@ import '../../../../../core/network/api_exception.dart';
 import '../../../../auth/data/local/token_storage.dart';
 import 'dtos/project_dto.dart';
 
-/// Speaks HTTP to /projects/* of the projects-service. Every request is
-/// authenticated with the access token from secure storage; if the token
-/// is missing it throws an [ApiException] with code AUTH_ERROR so the UI
-/// layer can redirect to login.
 class ProjectRemoteDataSource {
   final ApiClient _apiClient;
   final TokenStorage _tokenStorage;

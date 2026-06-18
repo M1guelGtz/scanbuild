@@ -1,6 +1,3 @@
-/// How the current/last authentication happened. Used to decide what to
-/// do when the user requests biometric unlock: replay the password call or
-/// re-issue a Google sign-in.
 enum AuthMethod { password, google }
 
 extension AuthMethodX on AuthMethod {

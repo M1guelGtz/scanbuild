@@ -1,5 +1,3 @@
-/// Validates a plaintext password against the same strength rules used by
-/// the backend (min 8 chars, ≥1 uppercase, ≥1 digit).
 class Password {
   static final RegExp _strength = RegExp(r'^(?=.*[A-Z])(?=.*\d).{8,}$');
 

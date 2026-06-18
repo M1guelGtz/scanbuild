@@ -10,7 +10,6 @@ extension ProjectStatusX on ProjectStatus {
     }
   }
 
-  /// Short Spanish label shown in status chips ("COTIZADO", "EN OBRA").
   String get label {
     switch (this) {
       case ProjectStatus.measured:   return 'Medido';
@@ -53,7 +52,6 @@ extension WorkTypeX on WorkType {
     }
   }
 
-  /// Uppercase compact label used in the dashboard cards ("COMBINADO", "PARED").
   String get cardLabel => label.toUpperCase();
 
   static WorkType fromWire(String raw) {
@@ -68,8 +66,6 @@ extension WorkTypeX on WorkType {
   }
 }
 
-/// Pure domain entity. Decimal values stay as strings ("14.20") to preserve
-/// precision from the wire.
 class Project {
   final String id;
   final String ownerId;

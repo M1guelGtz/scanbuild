@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../atoms/link_text.dart';
 
-/// Plain prose + clickable LinkText in the same row, centered.
-/// Example: "¿No tienes cuenta? Crear cuenta".
 class InlineLinkText extends StatelessWidget {
   final String leading;
   final String linkText;

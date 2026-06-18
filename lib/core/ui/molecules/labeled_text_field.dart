@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../atoms/field_label.dart';
 
-/// Combines a FieldLabel atom with a TextFormField. A molecule in the
-/// Atomic Design sense — two atoms working together as a single unit.
 class LabeledTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;

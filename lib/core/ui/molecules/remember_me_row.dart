@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../atoms/link_text.dart';
 
-/// "Mantener sesión" checkbox on the left + a forgot-password LinkText on
-/// the right. Stateless — both interactions are reported via callbacks.
 class RememberMeRow extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;

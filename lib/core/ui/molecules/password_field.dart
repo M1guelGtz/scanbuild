@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import 'labeled_text_field.dart';
 
-/// A LabeledTextField specialized for passwords: lock icon prefix and a
-/// reveal/hide toggle as suffix. Internal state for visibility only.
 class PasswordField extends StatefulWidget {
   final String label;
   final TextEditingController controller;

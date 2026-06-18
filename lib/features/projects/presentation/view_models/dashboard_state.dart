@@ -11,10 +11,8 @@ class DashboardState {
     this.errorMessage,
   });
 
-  /// Active = anything that isn't completed (i.e. still in pipeline).
   int get activeCount => projects.where((p) => p.status != ProjectStatus.completed).length;
 
-  /// Projects currently quoted.
   int get quotedCount => projects.where((p) => p.status == ProjectStatus.quoted).length;
 
   static const Object _sentinel = Object();

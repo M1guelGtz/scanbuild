@@ -43,8 +43,6 @@ class _LoginViewState extends State<_LoginView> {
   void initState() {
     super.initState();
     SecureScreen.enable();
-    // Resolve biometric availability AFTER the first frame so the VM's
-    // notifyListeners() doesn't fire during widget construction.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<LoginViewModel>().resolveBiometricAvailability();
@@ -94,10 +92,6 @@ class _LoginViewState extends State<_LoginView> {
     }
   }
 
-  /// If the VM flagged that this user could benefit from enabling the
-  /// biometric shortcut, ask now (after the manual login finished) and
-  /// before navigating away. Two-button modal, no widgets in our tree
-  /// that could conflict with the OS biometric prompt that follows.
   Future<void> _maybeShowEnrollDialog(LoginViewModel vm) async {
     if (!vm.state.shouldOfferBiometricEnroll) return;
     final accept = await showDialog<bool>(
@@ -213,9 +207,6 @@ class _LoginViewState extends State<_LoginView> {
                   enabled: !state.isBusy,
                   googleLoading: state.isGoogleLoading,
                   faceIdLoading: state.isBiometricLoading,
-                  // Only enable the shortcut when the device has a biometric
-                  // enrolled AND the user previously opted-in (the VM
-                  // resolves both checks after mount).
                   faceIdEnabled: state.biometricAvailable,
                   onFaceIdPressed: () => _onBiometric(vm),
                   onGooglePressed: () => _onGoogle(vm),

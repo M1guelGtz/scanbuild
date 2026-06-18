@@ -3,12 +3,6 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../atoms/google_icon.dart';
 
-/// Two outlined buttons (Face ID + Google) side by side. Each one supports
-/// its own loading state and can be independently disabled.
-///
-/// Face ID is only useful when the device has a biometric enrolled AND the
-/// user has previously opted-in to the shortcut. The caller controls that
-/// via [faceIdEnabled]; when false the button is greyed out.
 class SocialAuthButtons extends StatelessWidget {
   final VoidCallback? onFaceIdPressed;
   final VoidCallback? onGooglePressed;

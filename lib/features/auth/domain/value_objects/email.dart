@@ -1,5 +1,3 @@
-/// Immutable email value object. Validation mirrors the backend
-/// (Email VO in auth-service) so error messages are consistent end-to-end.
 class Email {
   static final RegExp _regex = RegExp(
     r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$',

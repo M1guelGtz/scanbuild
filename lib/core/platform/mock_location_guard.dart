@@ -23,13 +23,9 @@ class IntegrityResult {
       status == IntegrityStatus.permissionDeniedForever;
 }
 
-/// Verifica que el dispositivo no esté reportando una ubicación falsa.
-/// La detección real solo es posible en Android (Location.isMock /
-/// isFromMockProvider). En otras plataformas devuelve [IntegrityStatus.ok].
 class MockLocationGuard {
   static Future<IntegrityResult> check() async {
     if (!Platform.isAndroid) {
-      // iOS y desktop no exponen API equivalente; no bloqueamos.
       return const IntegrityResult(IntegrityStatus.ok,
           'Plataforma sin detección de mock locations.');
     }
@@ -60,8 +56,6 @@ class MockLocationGuard {
         );
       }
 
-      // Intenta primero la última posición conocida (rápido) y luego una
-      // actual si no hay caché.
       Position? position = await Geolocator.getLastKnownPosition();
       position ??= await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(

@@ -27,9 +27,7 @@ import '../presentation/view_models/integrity_view_model.dart';
 import '../presentation/view_models/login_view_model.dart';
 import '../presentation/view_models/register_view_model.dart';
 
-/// Manual factory / composition root for the auth feature.
 class AuthModule {
-  // Long-lived adapters
   final AuthRemoteDataSource remoteDataSource;
   final TokenStorage tokenStorage;
   final GoogleSignInService googleSignIn;
@@ -37,7 +35,6 @@ class AuthModule {
   final CredentialsVault credentialsVault;
   final AuthRepository repository;
 
-  // Use cases
   final LoginWithPassword loginWithPasswordUseCase;
   final LoginWithGoogle loginWithGoogleUseCase;
   final RegisterUser registerUserUseCase;

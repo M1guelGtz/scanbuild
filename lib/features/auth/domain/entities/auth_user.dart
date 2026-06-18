@@ -1,4 +1,3 @@
-/// Domain entity. Knows nothing about JSON, HTTP, or storage.
 class AuthUser {
   final String id;
   final String email;

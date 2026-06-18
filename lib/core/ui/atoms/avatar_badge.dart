@@ -2,13 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Circular avatar with initials + optional blue notification dot.
-///
-/// Implementation note: a previous version wrapped a Material in
-/// `Positioned.fill` inside a Stack. That combo triggered a Flutter
-/// assertion in `flushSemantics` (`!semantics.parentDataDirty`) on Android.
-/// The current layout (Stack with one default child + one Positioned dot)
-/// avoids it and renders identically.
 class AvatarBadge extends StatelessWidget {
   final String initials;
   final bool hasNotification;

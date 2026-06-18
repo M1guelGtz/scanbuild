@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../services/secure_storage_service.dart';
 
-/// Pantalla de configuración de la palabra clave del borrado remoto.
-///
-/// Permite al usuario guardar su `wipe_keyword`, cargar datos de prueba para
-/// poder demostrar el borrado, y ver si hay datos sensibles almacenados.
 class KeywordConfigScreen extends StatefulWidget {
   const KeywordConfigScreen({super.key});
 
@@ -34,7 +30,6 @@ class _KeywordConfigScreenState extends State<KeywordConfigScreen> {
     super.dispose();
   }
 
-  /// Recarga el estado (palabra clave guardada + si hay datos sensibles).
   Future<void> _refresh() async {
     try {
       final keyword =
@@ -96,8 +91,6 @@ class _KeywordConfigScreenState extends State<KeywordConfigScreen> {
       ..showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  /// SOLO DEBUG/DEMO: lee todas las claves del secure storage y las muestra en
-  /// un diálogo. No usar en producción: revela datos sensibles en pantalla.
   Future<void> _dumpStored() async {
     const keys = <String>[
       SecureStorageService.kWipeKeyword,
@@ -111,7 +104,6 @@ class _KeywordConfigScreenState extends State<KeywordConfigScreen> {
     try {
       for (final key in keys) {
         final value = await _storage.read(key);
-        // También lo dejamos en consola para verlo con `flutter run`.
         debugPrint('[secure_storage] $key = ${value ?? "(vacío)"}');
         lines.add(
           Padding(
@@ -192,7 +184,6 @@ class _KeywordConfigScreenState extends State<KeywordConfigScreen> {
                   ),
                   const Divider(height: 40),
 
-                  // --- Estado actual ---
                   _StatusTile(
                     icon: _hasKeyword
                         ? Icons.check_circle
@@ -213,7 +204,6 @@ class _KeywordConfigScreenState extends State<KeywordConfigScreen> {
                   ),
                   const Divider(height: 40),
 
-                  // --- Acciones de demo ---
                   OutlinedButton.icon(
                     onPressed: _seedDemoData,
                     icon: const Icon(Icons.science),
@@ -229,7 +219,6 @@ class _KeywordConfigScreenState extends State<KeywordConfigScreen> {
                     label: const Text('Borrar ahora (manual)'),
                   ),
                   const SizedBox(height: 8),
-                  // SOLO DEBUG/DEMO: vuelca lo guardado para inspeccionarlo.
                   if (kDebugMode)
                     OutlinedButton.icon(
                       onPressed: _dumpStored,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Small uppercase label rendered above form fields (e.g. "CORREO").
 class FieldLabel extends StatelessWidget {
   final String text;
   const FieldLabel(this.text, {super.key});

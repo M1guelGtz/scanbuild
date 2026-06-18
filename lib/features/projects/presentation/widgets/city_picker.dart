@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 
-/// Free-text city field + horizontal chips of quick-pick cities. Tapping a
-/// chip writes its label into the field and reports the value through
-/// [onChanged]. Single-state: the consumer owns the canonical value.
 class CityPicker extends StatelessWidget {
   final TextEditingController controller;
   final List<String> suggestions;

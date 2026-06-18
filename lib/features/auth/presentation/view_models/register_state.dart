@@ -1,4 +1,3 @@
-/// Immutable snapshot driving the RegisterPage.
 class RegisterState {
   final bool isSubmitting;
   final bool isGoogleLoading;
